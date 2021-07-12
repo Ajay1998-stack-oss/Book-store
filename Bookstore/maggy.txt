@@ -1,0 +1,160 @@
+Date:-10-Aug-2019
+install python
+------------------------
+check if python exists?
+->python --version
+if not, go to www.python.org
+download python
+install
+add environment variable
+check again
+->python --version
+o/p = Python 3.7.3
+------------------------------------
+install django
+--------------------------------------
+->pip install django
+check if successfully installed:
+->django-admin --version
+op = 2.2.4
+
+create django project
+--------------------------------------
+go to some location on my_computers:
+d:/tcs/b31/=>open cmd
+->django-admin startproject BookStore
+------------------------------------
+
+run the server
+-------------------------------
+->cd BookStore
+->python manage.py runserver
+it will give an IP Address:
+http://127.0.0.1:8000
+Or
+use local domain name:
+http://localhost:8000
+---------------------------------
+to close/stop the server
+->ctrl+c
+
+create the apps for your project
+----------------------------------
+->python manage.py startapp BookKeeper
+---------------------------------------
+register this app into project->settings.py
+INSTALLED_APPS = [
+	'BookKeeper'
+]
+-----------------------------------------
+
+===MVCT Structure===
+model = models.python	=		database
+view = views.py 		=		fucntions
+controller = urls.py 	=		Petterns list
+template = *.html		=		html files
+
+-----------------------------------------
+create the database in app > models.py
+class BookKeeper(models.Model):
+	loginid = models.CharField(max_length=30)
+	password = models.CharField(max_length=10)
+	fullname = models.CharField(max_length=40)
+class Author(models.Model):
+	aname = models.CharField(max_length=30)
+
+class Publisher(models.Model):
+	pname = models.CharField(max_length=30)
+
+class Book(models.Model):
+	bname = models.CharField(max_length=30)
+	bcode = models.CharField(max_length=10)
+	bprice = models.IntegerField(default=0)
+	bauthor = models.ForeignKey(Author, on_delete=models.CASCADE)
+	bpublisher = models.ForeignKey(Publisher, on_delete=models.CASCADE)
+	bedition = models.CharField(max_length=2)
+	bstock = models.IntegerField(default=0)
+
+------------------------------------------------
+now make migrations:
+->python manage.py makemigrations
+-----------------------------------------------
+
+now migrate all the created migrations into database i.e. perform ORM
+->python manage.py migrate
+-----------------------------------------
+
+CREATE a new ADMIN for the website:
+->python manage.py createsuperuser
+----------------------------------------------------
+enter user name
+enter email
+enter password
+confirm password:
+
+--------------------------------------------
+
+->python manage.py runserver
+localhost:8000/admin
+enter user name
+enter password
+
+----------------------------------------
+now register your models in admin.py
+app->admin.py
+
+from .models import *
+
+# Register your models here.
+admin.site.register(BookKeeper)
+admin.site.register(Author)
+admin.site.register(Publisher)
+admin.site.register(Book)
+
+#it will display all the apps in the admin section/area
+#there you can perform CRUD Operation
+----------------------------------------
+
+
+Date:-13-Aug-2019
+now to load html on screen at url:
+http://localhost:8000/BookKeeper/
+-----------------------------------
+
+download bootstrap
+extract in Project/assets/
+
+-----------------------------------
+now create an folder in BookKeeper(App)/templates
+-----------------------------------
+create a html page here in templates/home.html
+----------------------------------
+
+to register the html template:
+understand the process as below:
+
+user->browser->Project(urls.py)->check in urlpatterns=[]->App(urls.py)->check in urlpatterns=[]->App(views.py)->function(request, template_name="home.html")->return html page.
+
+
+
+.=>browser
+http://localhost:8000/BookKeeper
+
+.=>project(urls.py)
+url('BookKeeper/', include(('BookKeeper.urls','BookKeeper/'), namespace="BookKeeper")),
+
+
+
+.=>app(urls.py)
+urlpatterns = [
+    	url(r'^$', views.home, name='home'),
+]
+
+.=>app(view.py)
+def home(request, template_name="home.html"):
+	return render(request, template_name)
+
+.=>templates/home.html
+your html code here..
+----------------------------------
+loading static resources in html/web page
